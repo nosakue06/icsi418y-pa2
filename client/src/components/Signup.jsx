@@ -21,11 +21,16 @@ function Signup() {
         // this prevents webpage from refreshing when form is submitted
         e.preventDefault();
 
-        // this lets us check that React remembers user's information
-        console.log("First Name:", firstName);
-        console.log("Last Name:", lastName);
-        console.log("Username:", username);
-        console.log("Password:", password);
+        // it checks whether those required fields are filled
+        if (
+            !firstName.trim() ||
+            !lastName.trim() ||
+            !username.trim() ||
+            !password
+        ) {
+            alert("Please fill out all signup fields");
+            return;
+        }
 
         try {
 
@@ -36,33 +41,39 @@ function Signup() {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                f_name: firstName,
-                l_name: lastName,
-                username: username,
+                f_name: firstName.trim(),
+                l_name: lastName.trim(),
+                username: username.trim(),
                 password: password
             })
         });
 
+        // this reads backend response
         const data = await response.json();
 
-        if (response.ok) {
-            alert(data.message);
-        } else {
-            alert(data.message);
+        // checks whether signup was successful
+        if (!response.ok) {
+           throw new Error(data.message || "Signup failed");
         }
 
-        // it displays the backend response for testing
-        console.log("Server response:", data);
+        // this displays success message
+        alert(data.message);
+
+        // this clears signup fields
+        setFirstName("");
+        setLastName("");
+        setUsername("");
+        setPassword("");
     
     } catch (error) {
 
          // this runs if React can't connect to backend
-         console.error(error);
+         console.error("Signup error:", error);
          
-         alert("Could not connect to the server");
+         // this displays error message
+         alert(error.message);
 
     }
-
 }
 
     // the "return" describes what should appear on the webpage

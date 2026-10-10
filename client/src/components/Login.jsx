@@ -15,6 +15,12 @@ function Login() {
         // this prevents webpage from refreshing when form submitted
         e.preventDefault();
 
+        // checks to see whether both fields are filled 
+        if (!username.trim() || !password) {
+            alert("Please enter your username and password");
+            return;
+        }
+
         try {
 
         // it sends the username and password to Express backend
@@ -24,7 +30,7 @@ function Login() {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                username: username,
+                username: username.trim(),
                 password: password
             })
         });
@@ -32,15 +38,25 @@ function Login() {
         // this converts the response from Express into JavaScript data
         const data = await response.json();
 
+        // checks whether login failed
+        if (!response.ok) {
+            throw new Error(data.message || "Login failed");
+        }
+
         // this displays the backend response
         alert(data.message);
-   
+
+        // clears login fields after success
+        setUsername("");
+        setPassword("");
+
     } catch (error) {
 
-         // this runs if React cannot connect to backend
-         console.error(error);
+         // this displays error in console
+         console.error("Login error:", error);
 
-         alert("Could not connect to the server");
+         // it displays error message
+         alert(error.message);
          
     }
 
