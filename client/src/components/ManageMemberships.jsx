@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-function ManageMemberships() {
+function ManageMemberships({ projectRefresh }) {
 
     // this stores all of those projects from MongoDB
     const [projects, setProjects] = useState([]);
@@ -31,22 +31,38 @@ function ManageMemberships() {
             .catch((error) => {
                 console.error("Error getting projects:", error);
             });
-    }, []);
+    }, [projectRefresh]);
 
     // this gets the project members when selected project changes
     useEffect(() => {
 
-        if (selectedProject) {
-            getProjectMembers();
+        // this clears previous project members and selected user 
+        setMembers([]);
+        setSelectedUser("");
 
-            const project = projects.find((project) => project._id === selectedProject);
+        // checks whether a project is selected 
+        if (!selectedProject) {
+            setProjectLeadId("");
+            return;
+        }
+        
+        // this finds selected project 
+        const project = projects.find(
+            (project) => project._id === selectedProject
+        );
 
-            if (project) {
-                setProjectLeadId(project.project_lead_id);
-            }
+        // this stores selected project's lead ID
+        if (project) {
+            setProjectLeadId(project.project_lead_id);
+        } else {
+            setProjectLeadId("");
         }
 
-    }, [selectedProject]);
+        // this gets selected project's members
+        getProjectMembers();
+
+
+    }, [selectedProject, projects]);
 
     // this gets all those registered users from backend when component loads
     useEffect(() => {
