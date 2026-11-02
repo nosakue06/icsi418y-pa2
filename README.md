@@ -284,6 +284,7 @@ Database Verification
 
 ### Project Structure
 
+```text
 icsi418y-pa2/
 ├── client/
 │    └── src/
@@ -301,6 +302,7 @@ icsi418y-pa2/
 │   └── server.js
 ├── .gitignore
 └── README.md
+```
 
 ### Conclusion
 
